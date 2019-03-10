@@ -1,10 +1,14 @@
 {
+  "scripts": {
+    "dev": "concurrently -n parcel,app \"parcel watch public/index.html\" \"nodemon app/app.js\"",
+    "build": "parcel build --no-source-maps --experimental-scope-hoisting --detailed-report public/index.html && cd scripts && ts-node prep-data.ts"
+  },
   "devDependencies": {
     "@types/d3": "^5.7.1",
     "@types/express": "^4.16.1",
     "@types/jquery": "^3.3.29",
     "@types/mz": "0.0.32",
-    "@types/node": "^11.9.5",
+    "@types/node": "^11.11.0",
     "@types/request-promise-native": "^1.0.15",
     "@types/selectize": "^0.12.34",
     "@types/vis": "^4.21.11",
