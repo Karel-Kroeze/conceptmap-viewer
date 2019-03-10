@@ -12,7 +12,7 @@ let selectedActor: string;
 const margin = {top: 20, right: 20, bottom: 30, left: 30};
 
 async function initialize(){
-    dataService = new DataService( "http://cm_viewer.karel-kroeze.nl/api/" );
+    dataService = new DataService( "https://cm-viewer.karel-kroeze.nl/api/" );
     actors = await dataService.getActors();
 
     $("#actor-picker")
