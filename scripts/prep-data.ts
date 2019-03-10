@@ -47,5 +47,5 @@ async function  prep( path ){
     await fs.writeFile( "../data/conceptMaps.json", JSON.stringify( conceptMaps ), "utf8" );
 }
 
-prep("../../../data/clean/stories.json")
+prep("../data/stories.json")
 
