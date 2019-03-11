@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "concurrently -n parcel,app \"parcel watch public/index.html\" \"nodemon app/app.js\"",
+    "dev": "concurrently -n parcel,typescript,server \"parcel watch public/index.html\" \"cd app && tsc -w\" \"nodemon app/app.js\"",
     "build": "parcel build --no-source-maps --experimental-scope-hoisting --detailed-report public/index.html && cd scripts && ts-node prep-data.ts"
   },
   "devDependencies": {

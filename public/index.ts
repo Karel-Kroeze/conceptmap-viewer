@@ -4,7 +4,7 @@ import vis, { Node, Edge, DataSet } from 'vis';
 import { RemoteDataService as DataService } from "./RemoteDataService";
 import visOptions from "./vis-options";
 import $ from "jquery";
-import { IDataService, IActor, IHistory, IConceptMap } from "../types";
+import { IDataService, IActor, IHistory, IConceptMap, IFeedback } from "../types";
 
 let dataService: IDataService;
 let actors: IActor[];
@@ -12,7 +12,7 @@ let selectedActor: string;
 const margin = {top: 20, right: 20, bottom: 30, left: 30};
 
 async function initialize(){
-    dataService = new DataService( "https://cm-viewer.karel-kroeze.nl/api/" );
+    dataService = new DataService( "http://localhost:3000/api/" );
     actors = await dataService.getActors();
 
     $("#actor-picker")
@@ -42,6 +42,7 @@ function createTimeline( history: IHistory ){
     width = width || timelineElement.clientWidth;
     height = height || timelineElement.clientHeight;
     const series = history.series.filter( h => h.name !== "structure" );
+    const feedback = history.feedback;
     
     let xScale = d3.scaleTime()
         .domain( d3.extent( history.dates ) )
@@ -72,7 +73,10 @@ function createTimeline( history: IHistory ){
         .attr('transform', `translate(${ margin.left}, 0)`)
         .call(d3.axisLeft(yScale).tickArguments([4, "s"]))
     
-    const path = svg.selectAll(".line")
+    // criteria
+    const path = svg.append("g")
+        .attr("class", "criteria")
+        .selectAll(".line")
         .data( series )
       .enter().append("path")
         .attr("class", "line")
@@ -80,11 +84,24 @@ function createTimeline( history: IHistory ){
         .attr( "series", d => d.name )
         .style("stroke", (d, i, a) => colour( i, a.length ) )   
 
+    // feedback
+    const events = svg.append("g")
+        .attr("class", "events")
+        .selectAll(".event")
+        .data( feedback )
+      .enter().append("line")
+        .attr("class", "event" )
+        .attr("transform", (d) => `translate( ${xScale(d.time)}, 0 )`)
+        .attr("y1", yScale( 0 ) )
+        .attr("y2", yScale( 1.25 ) );
+
+    // tooltip
+    const tooltip = d3.select("#timeline").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0 );
+
     svg.style("position", "relative");
     svg.on("mousemove", moved );
-    // svg.on("mouseenter", entered );
-    // svg.on("mouseleave", left );
-    // svg.on("click", clicked );
 
     let current = svg.append( "g" )
         .attr( "class", "selected" )
@@ -122,9 +139,35 @@ function createTimeline( history: IHistory ){
     }
 
     let currentDate = 0;
+    let currentEvent: IFeedback;
     async function moved() {
         d3.event.preventDefault();      
         let pos = getPosition();
+
+        // handle event tooltips
+        let event = getEvent( pos.x );
+        if (event != currentEvent){
+            currentEvent = event;
+            feedback.forEach( fb => fb.hover = false );
+            if ( event ){
+                // console.log( "mouseover", {event, d3Event: d3.event });
+                event.hover = true;
+                tooltip.transition()
+                    .duration( 100 )
+                    .style( "opacity", 0.8 );
+                tooltip.html( getEventHtml( event ) )
+                    .style( "left", `${d3.event.pageX}px` )
+                    .style( "top", `${d3.event.pageY}px` );
+            } else {
+                // console.log( "mouseout", {event});
+                tooltip.transition()
+                    .duration( 500 )
+                    .style( "opacity", 0 );
+            }
+            updateEvents();
+        }
+
+        // handle criteria highlights
         let date = getDate( pos.x );
         if ( currentDate == date.getTime() )
             return;
@@ -136,6 +179,7 @@ function createTimeline( history: IHistory ){
         legend.data( points );
         updateLegend();
         updateNetwork( await dataService.getNetwork( selectedActor, date ) );
+
     }
 
     // async function clicked(){
@@ -160,6 +204,34 @@ function createTimeline( history: IHistory ){
                 closest = _time;
         }
         return closest;
+    }
+
+    function getEvent( time: Date, threshold: number = 30 ): IFeedback {
+        // console.log( "looking for event", {time, threshold})
+        let events = history.feedback.filter( fb => Math.abs( fb.time.getTime() - time.getTime() ) <= threshold * 1000 );
+        if ( !events || events.length == 0 )
+            return null;
+        // console.log( {events});
+        let closest = events[0];
+        for (const event of events ) {
+            if ( Math.abs( event.time.getTime() - time.getTime() )
+               < Math.abs( closest.time.getTime() - time.getTime() ) )
+                closest = event;
+        }
+
+        return closest;            
+    }
+
+    function updateEvents(): void {
+        events.data( feedback ).classed("hover", d => d.hover );
+    }
+
+    function getEventHtml( event: IFeedback ): string {
+        return `
+        <span class="question">${event.message}</span>
+        <span class="response">${event.response}</span>
+        <span class="action">${event.action}</span>
+        <span class="criterium">${event.criteria}</span>`
     }
 
     function getSelectedPoints( time: Date ){

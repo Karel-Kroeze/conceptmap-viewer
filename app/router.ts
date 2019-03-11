@@ -24,7 +24,7 @@ API.get( "/history", (req, res) => {
 });
 
 API.get( "/conceptmap", (req, res) => {
-    console.log( req.query );
+    // console.log( req.query );
     const { actor, time } = req.query;
     const maps = conceptMaps.filter( m => m.actor == actor );
     let map: any;

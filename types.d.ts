@@ -8,6 +8,7 @@ declare interface IHistorySeries {
 declare interface IHistory {
     dates: Date[]
     series: IHistorySeries[]
+    feedback: IFeedback[]
 }
 
 declare interface IConceptMap {
@@ -22,6 +23,16 @@ declare interface IActor {
     age?: number
     level?: string
     grade?: number
+}
+
+declare interface IFeedback {
+    actor: string
+    time: Date
+    action: string
+    criteria: string
+    message: string
+    response: string
+    hover?: boolean
 }
 
 declare interface IDataService {

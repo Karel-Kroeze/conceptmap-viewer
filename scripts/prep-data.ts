@@ -11,7 +11,8 @@ async function  prep( path ){
             const story = data[actor];
             const history: IHistory = histories[actor] = {
                 dates: story.maps.map( ss => ss.time ),
-                series: []
+                series: [],
+                feedback: story.feedback
             };
 
             history.series.push({

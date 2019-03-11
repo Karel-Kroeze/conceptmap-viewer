@@ -15,7 +15,7 @@ services:
     ports:
       - 3000 #:3000 # local dev
     environment:
-      - LETSENCRYPT_HOST=cm_viewer.karel-kroeze.nl
+      - LETSENCRYPT_HOST=cm-viewer.karel-kroeze.nl
       - LETSENCRYPT_EMAIL=karel.kroeze@gmail.com
-      - VIRTUAL_HOST=cm_viewer.karel-kroeze.nl
+      - VIRTUAL_HOST=cm-viewer.karel-kroeze.nl
       - VIRTUAL_PORT=3000

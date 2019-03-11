@@ -21,7 +21,7 @@ exports.API.get("/history", function (req, res) {
     res.json(histories[actor]);
 });
 exports.API.get("/conceptmap", function (req, res) {
-    console.log(req.query);
+    // console.log( req.query );
     var _a = req.query, actor = _a.actor, time = _a.time;
     var maps = conceptMaps.filter(function (m) { return m.actor == actor; });
     var map;

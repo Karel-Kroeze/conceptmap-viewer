@@ -30,6 +30,7 @@ export class RemoteDataService implements IDataService {
 
 function createDates( history: IHistory ): any {
     history.dates = history.dates.map( d => new Date( d ) )
+    history.feedback.forEach( fb => fb.time = new Date( fb.time ) );
     return history;
 }
 

@@ -40,6 +40,8 @@
 }
 
 #timeline {
+    overflow: hidden;
+
     .axis {
         line, path {
             fill: none;
@@ -60,15 +62,62 @@
         stroke-linecap: round;
     }
 
+    .event {
+        stroke: grey;
+        stroke-width: 0.5px;
+    }
+
+    .event.hover {
+        stroke: aqua;
+        stroke-width: 1px;
+    }
+
+    .tooltip {
+        position: absolute;			
+        text-align: center;			
+        background: black;
+        color: #eee;	
+        border: 0px;		
+        border-radius: 8px;			
+        pointer-events: none;	
+        font-size: 12px;
+        padding: 5px;
+
+        span {
+            display: block;
+            margin: 3px;
+        }
+        
+        .action {
+            font-size: 10px;
+            font-weight: bold;
+            color: grey;
+            float: left;
+        }
+
+        .question {
+            font-style: italic;
+        }
+
+        .response {
+            color: #fff;
+            font-size: 14px;
+            margin: 6px;
+        }
+
+        .criterium {
+            font-size: 10px;
+            color: grey;
+            float: right;
+        }
+    }
+
     .selected {
         line {
             stroke: steelblue;
             stroke-opacity: 1;
             stroke-dasharray: 3,2;
             stroke-width: 0.5px;
-        }
-        circle {
-            
         }
     }
 }
