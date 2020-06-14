@@ -1,7 +1,7 @@
 import d3 = require( "d3" );
 import vis, { Node, Edge, DataSet } from 'vis';
 // import { LocalDataService as DataService } from "./LocalDataService";
-import { RemoteDataService as DataService } from "./RemoteDataService";
+import { GraaspDataService as DataService } from "./GraaspDataService";
 import visOptions from "./vis-options";
 import $ from "jquery";
 import { IDataService, IActor, IHistory, IConceptMap, IFeedback } from "../types";
@@ -12,7 +12,7 @@ let selectedActor: string;
 const margin = {top: 20, right: 20, bottom: 30, left: 30};
 
 async function initialize(){
-    dataService = new DataService( "http://localhost:3000/api/" );
+    dataService = new DataService( "5c628f988e853c853297b428", "http://localhost:3000/graasp/" );
     actors = await dataService.getActors();
 
     $("#actor-picker")

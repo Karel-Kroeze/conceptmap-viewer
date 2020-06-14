@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 import moment from "moment";
 
-
 const historyPath = path.resolve( __dirname, "../data/histories.json" );
 const conceptMapsPath = path.resolve( __dirname, "../data/conceptMaps.json" );
 
@@ -34,4 +33,4 @@ API.get( "/conceptmap", (req, res) => {
     map = map || maps[0];
     
     res.json( !!map ? map.map : undefined );
-})
+});
